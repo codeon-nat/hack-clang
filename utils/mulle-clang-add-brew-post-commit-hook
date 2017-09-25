@@ -1,4 +1,4 @@
-#! /bin/sh -x
+#! /bin/sh
 
 # (c) 2017 Nat!, Mulle kybernetiK
 #
@@ -9,13 +9,21 @@
 # post-checkout hook into brew, and regenerate the shim whenever
 # homebrew updates.
 #
-if [ -z "`command -v brew`" ]
+
+set -x
+
+hookdir="$1"
+if [ ! -d "${hookdir}" ]
 then
-   echo "brew not in PATH" >&2
-   exit 1
+   if [ -z "`command -v brew`" ]
+   then
+      echo "brew not in PATH" >&2
+      exit 1
+   fi
+
+   hookdir="`brew --repo`/.git/hooks"
 fi
 
-hookdir="`brew --repo`/.git/hooks"
 if [ ! -d "${hookdir}" ]
 then
    echo 'brew git repo not found. Very unusual!!' >&2
